@@ -23,7 +23,9 @@ export default function Step1(props) {
     
     
     useEffect(() => {
-        props.setState('medNameQ', "MEDNAMEQ");
+        let medString = props.getState('medId', '') + "string";
+        //props.setState('medNameQ', "MEDNAMEQ");
+        props.setState('medNameQ', medString);
     }, [props.state.medId]);
 
     function validate() {

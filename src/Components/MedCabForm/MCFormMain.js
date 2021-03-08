@@ -11,7 +11,14 @@ import {Steps, Step} from "react-step-builder";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
-import Step4 from "./Step4";
+import EveryDay from "./EveryDay";
+import Monday from "./Monday";
+import Tuesday from "./Tuesday";
+import Wednesday from "./Wednesday";
+import Thursday from "./Thursday";
+import Friday from "./Friday";
+import Saturday from "./Saturday";
+import Sunday from "./Sunday";
 
 import FinalStep from "./FinalStep";
 import '../../Styles/MCForm.css';
@@ -23,8 +30,15 @@ export default function MCFormMain() {
         <Step component={Step1} />
         <Step component={Step2} />
         <Step component={Step3} />
-        <Step component={Step4} />
-        <Step component={FinalStep} />
+        <Step component={EveryDay} />
+        <Step component={Monday} />
+        <Step component={Tuesday} />
+        <Step component={Wednesday} />
+        <Step component={Thursday} />
+        <Step component={Friday} />
+        <Step component={Saturday} />
+        <Step component={Sunday} />
+        <Step component={FinalStep} /> 
       </Steps>
     </div>
   );

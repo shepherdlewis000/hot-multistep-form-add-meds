@@ -17,7 +17,7 @@ export default function Step3(props) {
     // check that everyDay state variable is either "false" or "true"
     function validate() {
         console.log("Entered valide Step3 line 19")
-        const currMedId = props.getState('medId');
+        //const currMedId = props.getState('medId');
 
         const currEveryDay = props.getState('everyDay');
         if (currEveryDay === 'true') {
@@ -43,10 +43,20 @@ export default function Step3(props) {
                 console.log("state step1 line 22:");
                 console.dir(props.state);
 
+                /*
                 if (exists) {
                     props.next(); // Step 2 confirms deleteOldScheduleX
                 }
                 else props.jump(3); // or just go to step 3
+                */
+                if (props.getState('everyDay') === 'false') {
+                    console.log("everyDay is false");
+                    props.jump(5);
+                }
+                else {
+                    console.log("everyDay is true");
+                    props.next();
+                }
             })()
             :
             setModalShow(true) // Show the error modal becase nothing was chose
@@ -75,12 +85,12 @@ export default function Step3(props) {
                                 <input type="radio" id="everyDayTrue"
                                     name="everyDay" value={props.getState('everyDay', "true")}
                                     onChange={props.handleChange} />
-                                <label for="everyDayTrue">Yes</label>
+                                <label htmlFor="everyDayTrue">Yes</label>
 
                                     <input type="radio" id="everyDayFalse"
                                         name="everyDay" value={props.getState('everyDay', 'false')}
                                         onChange={props.handleChange} />
-                                <label for="everyDayFalse">No</label>
+                                <label htmlFor="everyDayFalse">No</label>
                             </div>
                             <div>
                                 <hr />
