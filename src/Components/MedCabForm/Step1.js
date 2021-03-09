@@ -5,6 +5,10 @@ import '../../Styles/MCForm.css';
 
 export default function Step1(props) {
 
+    // Initialize some values
+    // Oops can't do this or recursive nested updates
+    //props.setState('weeklyTimes', []);
+
     const [modalShow, setModalShow] = React.useState(false);
 
     //props.setState('existingSchedule2', false);

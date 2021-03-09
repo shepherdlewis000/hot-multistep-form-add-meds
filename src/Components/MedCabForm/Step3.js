@@ -55,6 +55,7 @@ export default function Step3(props) {
                 }
                 else {
                     console.log("everyDay is true");
+                    //props.jump(4);
                     props.next();
                 }
             })()

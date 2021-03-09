@@ -10,7 +10,7 @@ function FinalStep(props) {
       <p>medNameQ: {props.getState('medNameQ')}</p>
       <p>existingScheduleX: {String(props.getState('existingScheduleX'))}</p>
       <p>deleteOldScheduleZ: {String(props.getState('deleteOldScheduleZ'))}</p>
-      <p>weeklyTimes: {props.getState('weeklyTimes').toString()}</p>
+      <p>weeklyTimes: {props.getState('weeklyTimes')}</p>
       <p>MondayTimes: {props.getState('MondayTimes')}</p>
       <p>TuesayTimes: {props.getState('TuesdayTimes')}</p>
       <p>WednesdayTimes: {props.getState('WednesdayTimes')}</p>

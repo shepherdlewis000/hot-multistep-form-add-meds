@@ -49,7 +49,7 @@ export default function EveryDay(props) {
             </Row>
             <Row className="mt-4">
                 <Col>
-                    <TimePick submitTimes={submitTimeValues} />
+                    <TimePick submitTimes={submitTimeValues} timeValues={this.state.timeValues} />
                 </Col>
             </Row>
             <Row>

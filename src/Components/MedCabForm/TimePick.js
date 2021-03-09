@@ -1,9 +1,13 @@
-import React from "react";
-
+import React from 'react';
 import "antd/dist/antd.css";
 //import "./index.css";
 import { TimePicker } from "antd";
 import moment from "moment";
+
+/* props: 
+submitTimes(times) - stores times array to parent component
+timeValues - parents array of time values
+*/
 
 class TimePick extends React.Component {
 /*  
@@ -24,6 +28,23 @@ constructor(props) {
       });
     }
   };
+    
+
+  //this.props.submitTimes(this.state.timeValues); 
+    /*
+    useEffect( () => {
+        // Check if truthy first
+        if (this.state.timeValues) {
+            console.log('running props.submitTimes in useEffect line 33');
+            this.props.submitTimes(this.state.timeValues);
+        }
+    }, [this.state.timeValues])
+*/
+    /*
+    useEffect(() => {
+        console.log('hello');
+}, []);
+*/
 
   startOver = () => {
     this.setState({
@@ -44,7 +65,14 @@ constructor(props) {
       timeValues: [...this.state.timeValues, this.retrieveHr(this.state.timeValue)],
       timeValue: ""
     });
+      
+      // yeah this will be one value behind because not current until re-render
+      console.log("this.state.timeValues at 51: " + this.state.timeValues);
+      // If we place below here, then it's always one time value behind
+      // because this.state.timeValues isn't "current" until the next render?
+      //this.props.submitTimes(this.state.timeValues); 
   };
+
 
   toTwelveHr = hour => {
     if (hour === 0) return "12 AM";
@@ -53,16 +81,21 @@ constructor(props) {
     if (hour <= 23) return `${hour - 12} PM`;
     return null;
   };
+    
+    componentWillUnmount() {
+        this.props.submitTimes(this.state.timeValues);
+    }
 
-  render() {
-      //let myVal = this.state.timeValue.toString(); 
-    //let myVals = [...this.state.values];
-      //{ let myVals = this.state.timeValues.map(el => el.toString() + " "); } // was working
-      //let myVals = this.state.timeValues.map((el, index) => { return { key: index, str: el.toString() + " " } })
+  render(){
       
     return (
-      <>
-        <div>
+        <>
+            {console.log("re-render? local state timeValues is: " + this.state.timeValues)}
+            {console.log("re-render? this.props.timeValues: " + this.props.timeValues)}
+
+            <div>
+                <p>props.timeValues: {this.props.timeValues}</p> 
+                <p>this.state.timeValues (what's in Step) on render line 86: {this.state.timeValues} - NOTE: Might be a step behind?</p>
                 {/* <p>Current value: {myVal}</p> */}
           <p>Your schedule will be: </p>
             {this.state.timeValues.map((timeVal, index) => (
@@ -78,6 +111,7 @@ constructor(props) {
         <TimePicker
           timeValue={this.state.timeValue}
           onChange={this.onTimeChange}
+          //onSelect={this.onTimeChange} // Might be useful instead of clicking OK
           format={"h a"}
           showNow={false}
           use12Hours
@@ -91,8 +125,8 @@ constructor(props) {
                 console.log("Done");
                 console.log("timeValues at TimePick 86: " + this.state.timeValues);
                 this.props.submitTimes(this.state.timeValues);
-            }
-            }>Finish adding times</button>
+                }
+            }>Finish adding times</button> 
 
         
       </>

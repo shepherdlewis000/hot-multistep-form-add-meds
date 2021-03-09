@@ -11,7 +11,7 @@ import {Steps, Step} from "react-step-builder";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
-import EveryDay from "./EveryDay";
+import EveryDay2 from "./EveryDay2";
 import Monday from "./Monday";
 import Tuesday from "./Tuesday";
 import Wednesday from "./Wednesday";
@@ -22,15 +22,19 @@ import Sunday from "./Sunday";
 
 import FinalStep from "./FinalStep";
 import '../../Styles/MCForm.css';
+//import { propTypes } from "react-bootstrap/esm/Image";
 
-export default function MCFormMain() {
+export default function MCFormMain(props) {
+
+  //const [weeklyTimes, setWeeklyTimes] = React.useState([]);
+  
   return (
     <div className="mainFormDiv">
       <Steps>
         <Step component={Step1} />
         <Step component={Step2} />
         <Step component={Step3} />
-        <Step component={EveryDay} />
+        <Step component={EveryDay2} />
         <Step component={Monday} />
         <Step component={Tuesday} />
         <Step component={Wednesday} />
