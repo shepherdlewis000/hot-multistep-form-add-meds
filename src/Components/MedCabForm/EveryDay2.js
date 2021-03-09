@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "antd/dist/antd.css";
 import { TimePicker } from "antd";
 import moment from 'moment';
-import { Row, Col, Button, Container, Modal } from 'react-bootstrap';
+import { Row, Col, Button, Container, Modal, ListGroup, Card } from 'react-bootstrap';
 
 // props
 // weeklyTimes -> array of times
@@ -10,48 +10,44 @@ import { Row, Col, Button, Container, Modal } from 'react-bootstrap';
 
 export default function EveryDay2(props){
 
-    console.log('ENTERED EVERYDAY2')
     const [modalShow, setModalShow] = React.useState(false);
     const theMedName = props.getState('medNameQ');
 
+    // timeValue: a 13 digit timestamp obtained from TimePicker
     const [timeValue, setTimeValue] = useState("");
-    
-    // Pass this as TimePicker's onChange
+
+    // React won't let you do this 
+    //props.setState('weeklyTimes', []); // Initialize weeklyTimes state in Steps
+
+    // Passed as TimePicker's component's onChange
     const onTimeChange = time => {
-        if (time !== null) {
+        if (time !== null) 
             setTimeValue(time);
-        }
     };
 
-    // Clear global state for weekTimes
-    /*
-    const startOver = () => {
-        this.props.setWeekTImes([]);
-    }*/
+    // helper: extract hour portion of 13 digit timestamp produced from Timepicker
+    const retrieveHour = aTime => ( new Date(aTime).getHours() );
 
-    // helper: get the hour portion of a time 
-    const retrieveHr = aTime => {
-        return new Date(aTime).getHours();
-    }
-
-    // Use this as the event listener for the "Add this time" button
+    /************************************************************************
+     * Function: addTime()
+     * Event listener for the timepicker
+     *///////////////////////////////////////////////////////////////////////
     const addTime = () => {
-        console.log("this.state.timeValue 34: " + timeValue);
-        if (timeValue === "") {
-            return; 
+        if (timeValue === "") 
+            return; // if user clicked "Add time" before choosing a time, just ignore
+
+        const hrToAdd = retrieveHour(timeValue); // extract the hour
+
+        let currentWeeklyTimes = props.getState('weeklyTimes');
+
+        if (!currentWeeklyTimes) { // If weeklyTimes not yet initialized, just add hrToAdd
+            props.setState('weeklyTimes', [hrToAdd]);
         }
-
-        console.log("props.weeklyTimes: " + props.getState('weeklyTimes'));
-
-        // Get the hour and append to parent's weekTimes array
-        let hrToAdd = retrieveHr(timeValue);
-
-        // Only add it once
-        if (!props.weeklyTimes.includes(hrToAdd)) {
-            //([[...props.weeklyTimes], hrToAdd]);
-            const times = props.getState('weeklyTimes');
-            //props.setState('weeklyTimes', [...times, hrToAdd])
-            // WHAT THE HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+       
+        /* If weeklyTimes already exists and it doesn't already have that time, then add */
+        if ((currentWeeklyTimes) && (!currentWeeklyTimes.includes(hrToAdd))) {
+            let newWeeklyTimes = [...currentWeeklyTimes, hrToAdd].sort((a, b) => a - b);
+            props.setState('weeklyTimes', newWeeklyTimes);
         }
     } // end function addTime
 
@@ -67,20 +63,38 @@ export default function EveryDay2(props){
     function timesList() {
         if (!props.getState('weeklyTimes'))
             return null;
+        /*
         return (
             <>
-                <p>props.getState('weeklyTimes'): {props.getState('weeklyTimes')}
-                </p>
                 <p>Your schedule will be:
-                        
+                    <ListGroup horizontal={sm} className="my-2">
                     {props.getState('weeklyTimes').map((time, index) => 
-                        <>
-                            <span key={{ time } + '.' + index}>{toTwelveHr(time) + " "}</span>
-                        </>
+                        <li key={{ time } + '.' + index}>{toTwelveHr(time) + " "}</li>
                     )}
+                    </ListGroup>
                 </p>
             </>
-        )
+        ) */
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <div className={"pt-1"} style={{ backgroundColor: "#39C0ED" }}>
+                            <span>Your doses are to be take at: </span>
+                            <br />
+                            <ListGroup horizontal={"sm"} className="my-2 justify-content-center">
+                                {props.getState('weeklyTimes').map((time, index) => 
+                                    <ListGroup.Item className={"ml-2 mr-2 mb-3"} variant={'secondary'} key={{ time } + '.' + index}>
+                                        {toTwelveHr(time)}
+                                    </ListGroup.Item>
+                                )}
+                            </ListGroup>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        ) 
+
     }// end function timesList
 
     return (
@@ -89,38 +103,80 @@ export default function EveryDay2(props){
                 <Col>
                     <h3>Setup an everyday schedule</h3>
                     <p>
-                        You have indicated that you want to take {theMedName} at the same times every day of the week.
+                        Now let's record the times of day you want to take {theMedName}.
                     </p>
-                    {/* {timesList()} */}
+                     {timesList()} 
                 </Col>
             </Row>
             <Row className="mt-3">
-                <p>Choose a time and click "OK". Then click "Add this time" to add it to the list. When you are done, click "Finish adding times". Finally click "Proceed"</p>
-                <TimePicker
-                    timeValue={timeValue}
-                    onChange={onTimeChange}
-                    //onSelect={this.onTimeChange} // Might be useful instead of clicking OK
-                    format={"h a"}
-                    showNow={false}
-                    use12Hours
-                    defaultValue={moment("00:00", "HH:mm")}        
-                />
+                <Col md={4}>
+                    <Card border={"info rounded"} bg={"light"}>
+                        <Card.Body>
+                            <TimePicker
+                                timeValue={timeValue}
+                                size={'large'}
+                                onChange={onTimeChange}
+                                //onSelect={this.onTimeChange} // Might be useful instead of clicking OK
+                                format={"h a"}
+                                showNow={false}
+                                use12Hours
+                                //defaultValue={moment("00:00", "HH:mm")}       
+                            />
+                            <Card.Text className={"small mt-5 pb-0 pt-1 text-center text-danger"}>Make sure to click "ok" when using the time picker.
+                            </Card.Text>
+                        </Card.Body>
+                        <Card.Footer>
+                            
+                            <Row>
+                                <Col>
+                                    <Button className={"mb-2"} onClick={addTime} block>Add to schedule</Button>
+                                    <Button variant={"danger"} block onClick={() => props.setState('weeklyTimes', [])}>Clear stored values</Button>
+                                </Col>
+                            </Row>
+
+                        </Card.Footer>
+                    </Card>
+
+                        
+                        
+               
+                </Col>
+                <Col md={8}>
+                    <ListGroup className={"text-left"}>
+                        <ListGroup.Item>
+                            Choose the times you want to take {theMedName} using the time picker to the right.
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            Click "Add to schedule" to save the time to your list.
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            If you need to clear the stored times and start over, click "Clear stored values" on the right hand side.
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            When you are finished entering all your times, click "Proceed" at the bottom.
+                        </ListGroup.Item>
+
+                    </ListGroup>
+                </Col>
             </Row>
             <Row>
                 <Col>
-                    <Button onClick={addTime}>Add this time</Button>
+                    
+                </Col>
+                <Col>
                 </Col>
             </Row>
             <Row>
                 <Col>
                     <Button
                         className="backBlockButton"
-                        onClick={props.jump(3)}
+                        onClick={() => props.prev()}
+                        
                         variant='danger'
-                        block>Go back to dashboard</Button>
+                        block>Go back to the last step</Button>
                     <Button
                         variant='primary'
-                        onClick={props.jump(12)}//////////////////?FIXXXXXX
+                        onClick={() => props.jump(12)}//////////////////?FIXXXXXX
                         block>Proceed
                     </Button>
 
@@ -128,6 +184,7 @@ export default function EveryDay2(props){
             </Row>
 
             <EveryDay2ErrorModal
+                ///// REMOVED FOR DEBUGGING
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
