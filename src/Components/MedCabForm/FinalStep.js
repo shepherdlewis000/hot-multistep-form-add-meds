@@ -22,6 +22,11 @@ function FinalStep(props) {
     arrayOutput(props.getState('weeklyTimes'));
   }
 
+  function printArr(arr) {
+    if (arr && arr.length > 0) return arr.toString();
+    else return null;
+  }
+
   console.log('hey');
   return (
     <div>
@@ -32,23 +37,16 @@ function FinalStep(props) {
       <p>3 existingScheduleX: {String(props.getState('existingScheduleX'))}</p>
       <p>4 deleteOldScheduleZ: {String(props.getState('deleteOldScheduleZ'))}</p>
       
-      <p>5 weeklyTimes: {props.getState('weeklyTimes')}</p>
-      <p>5b weeklyTImes: </p>
-      
-      { (props.getState('weeklyTimes') ? 
-        <p>6 weeklyTimes.length: {props.getState('weeklyTimes').length}</p>
-        :
-        null
-       )}
+      <p>5 weeklyTimes: {printArr(props.getState('weeklyTimes'))}</p>
       
 
-      <p>7 MondayTimes: {props.getState('MondayTimes')}</p>
-      <p>8 TuesayTimes: {props.getState('TuesdayTimes')}</p>
-      <p>WednesdayTimes: {props.getState('WednesdayTimes')}</p>
-      <p>ThursdayTimes: {props.getState('ThursdayTimes')}</p>
-      <p>FridayTimes: {props.getState('FridayTimes')}</p>
-      <p>SaturdayTimes: {props.getState('SaturdayTimes')}</p>
-      <p>SundayTimes: {props.getState('SundayTimes')}</p>
+      <p>7 MondayTimes: {printArr(props.getState('mondayTimes'))}</p>
+      <p>8 TuesayTimes: {printArr(props.getState('tuesdayTimes'))}</p>
+      <p>9 WednesdayTimes: {printArr(props.getState('wednesdayTimes'))}</p>
+      <p>10 ThursdayTimes: {printArr(props.getState('thursdayTimes'))}</p>
+      <p>11 FridayTimes: {printArr(props.getState('fridayTimes'))}</p>
+      <p>12 SaturdayTimes: {printArr(props.getState('saturdayTimes'))}</p>
+      <p>13 SundayTimes: {printArr(props.getState('sundayTimes'))}</p>
     </div>
   );
 }
