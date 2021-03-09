@@ -20,15 +20,10 @@ export default function Step1(props) {
         //document.title = `You clicked ${count} times`;
         //props.setState('existingSchedule2', false); // don't know what's up with this one it never sets
         props.setState('deleteOldScheduleX', false); // only this one is pushed to state
-        console.log("In use effect line 19 of step1: ");
-        console.log(props.state);
     }, []);
-
-    
     
     useEffect(() => {
         let medString = props.getState('medId', '') + "string";
-        //props.setState('medNameQ', "MEDNAMEQ");
         props.setState('medNameQ', medString);
     }, [props.state.medId]);
 
@@ -92,7 +87,7 @@ export default function Step1(props) {
                 <Col>
                     <Button className="backBlockButton" href="./dashboard" variant='danger' block>Go back to dashboard</Button>
                     <Button
-                        variant='primary'
+                        variant='success'
                         onClick={validate}
                         block>Proceed
                     </Button>

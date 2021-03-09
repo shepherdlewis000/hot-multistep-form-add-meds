@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import "antd/dist/antd.css";
 import { TimePicker } from "antd";
-import moment from 'moment';
+//import moment from 'moment';
 import { Row, Col, Button, Container, Modal, ListGroup, Card } from 'react-bootstrap';
-import { convertLegacyProps } from 'antd/lib/button/button';
 
 // props
 // weeklyTimes -> array of times
@@ -81,7 +80,7 @@ export default function EveryDay2(props){
                 <Row>
                     <Col>
                         <div className={"pt-1"} style={{ backgroundColor: "#39C0ED" }}>
-                            <span>Your doses are to be take at: </span>
+                            <span>Your doses will be taken at: </span>
                             <br />
                             <ListGroup horizontal={"sm"} className="my-2 justify-content-center">
                                 {props.getState('weeklyTimes').map((time, index) => 
@@ -167,16 +166,16 @@ export default function EveryDay2(props){
                 <Col>
                 </Col>
             </Row>
-            <Row>
-                <Col>
+            <Row className={'mt-3'}>
+                <Col>{/* This was acting squirrelly. Removing this option to re-choose schedule type.
                     <Button
                         className="backBlockButton"
                         onClick={() => props.prev()}
                         
                         variant='danger'
-                        block>Go back to the last step</Button>
+                        block>Go back to the last step</Button> */}
                     <Button
-                        variant='primary'
+                        variant='success'
                         onClick={validate}//////////////////?FIXXXXXX
                         block>Proceed
                     </Button>

@@ -14,11 +14,11 @@ export default function Step3(props) {
     function validate() {
         
         const currEveryDay = props.getState('everyDay');
-        if (currEveryDay === 'true') 
+        if (currEveryDay === 'true')
             console.log("currEveryDay is true")
-        else if (currEveryDay === 'false') 
+        else if (currEveryDay === 'false')
             console.log("currEveryDay is false")
-        else 
+        else
             setModalShow(true); // User didn't answer so error modal
 
         ((currEveryDay !== "") && (currEveryDay !== undefined)) ?
@@ -49,7 +49,10 @@ export default function Step3(props) {
     } // end function validate
     
     return (
+
+            
         <Container className="step-container">
+            {console.log('55: everyDay in state: ' + props.getState('everyDay'))}
             <Row className="mb-2">
                 <Col>
                     <h3>Step 3</h3>
@@ -109,7 +112,7 @@ export default function Step3(props) {
                         block>Go back to dashboard
                     </Button>
                     <Button
-                        variant='primary'
+                        variant='success'
                         onClick={validate}
                         block>Proceed
                     </Button>

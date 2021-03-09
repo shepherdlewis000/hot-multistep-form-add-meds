@@ -1,104 +1,245 @@
-import React from "react";
-import { Row, Col, Button, Container, Modal } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../Styles/MCForm.css';
+import React, { useState } from 'react';
+import "antd/dist/antd.css";
+import { TimePicker } from "antd";
+//import moment from 'moment';
+import { Row, Col, Button, Container, Modal, ListGroup, Card, ButtonGroup } from 'react-bootstrap';
 
-//import { TimePicker } from "antd";
-//import "antd/dist/antd.css";
-import TimePick from "./TimePick";
-
-export default function Monday(props) {
+export default function Monday(props){
 
     const [modalShow, setModalShow] = React.useState(false);
     const theMedName = props.getState('medNameQ');
-    
-    let dailyTimes = [];
+    const theDay = "Monday";
 
-    /*
-    function validate(props){
-        console.log("validate");
-        //React.useEffect(() => props.setState("weeklyTimes", dailyTimes));
-        props.setState("weeklyTimes", dailyTimes);
+    // timeValue: a 13 digit timestamp obtained from TimePicker
+    const [timeValue, setTimeValue] = useState("");
 
-        console.log("state's weeklyTimes: " + props.getState("weeklyTimes"));
-    } // end function validate
-    */
-    function validate() {
-        props.jump(12);
-    }
-    
-    function submitTimeValues(times) {
-        dailyTimes = times;
-        console.log("Daily times: " + dailyTimes);
-        console.log("33: " + props.getState('medId'))
-        props.setState("weeklyTimes", dailyTimes);
-        console.log("35: " + props.getState("weeklyTimes")); // GOOD
-    }
+    // Passed as TimePicker's component's onChange
+    const onTimeChange = time => {
+        if (time !== null) 
+            setTimeValue(time);
+    };
+
+    // helper: extract hour portion of 13 digit timestamp produced from Timepicker
+    const retrieveHour = aTime => ( new Date(aTime).getHours() );
+
+    /************************************************************************
+     * Function: addTime()
+     * Event listener for the timepicker
+     *///////////////////////////////////////////////////////////////////////
+    const addTime = () => {
+        if (timeValue === "") 
+            return; // if user clicked "Add time" before choosing a time, just ignore
+
+        const hrToAdd = retrieveHour(timeValue); // extract the hour
+
+        let currentMondayTimes = props.getState('mondayTimes');
+
+        if (!currentMondayTimes) { // If mondayTimes not yet initialized, just add hrToAdd
+            props.setState('mondayTimes', [hrToAdd]);
+        }
+       
+        /* If mondayTimes already exists and it doesn't already have that time, then add */
+        if ((currentMondayTimes) && (!currentMondayTimes.includes(hrToAdd))) {
+            let newMondayTimes = [...currentMondayTimes, hrToAdd].sort((a, b) => a - b);
+            props.setState('mondayTimes', newMondayTimes);
+        }
+    } // end function addTime
+
+    // helper function
+    const toTwelveHr = hour => {
+        if (hour === 0) return "12 AM";
+        if (hour <= 11) return `${hour} AM`;
+        if (hour === 12) return "12 PM";
+        if (hour <= 23) return `${hour - 12} PM`;
+        return null;
+    };
+
+    function timesList() {
+        if (!props.getState('mondayTimes'))
+            return null;
+        /*
+        return (
+            <>
+                <p>Your schedule will be:
+                    <ListGroup horizontal={sm} className="my-2">
+                    {props.getState('mondayTimes').map((time, index) => 
+                        <li key={{ time } + '.' + index}>{toTwelveHr(time) + " "}</li>
+                    )}
+                    </ListGroup>
+                </p>
+            </>
+        ) */
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <div className={"pt-1"} style={{ backgroundColor: "#39C0ED" }}>
+                            <span>Your {theDay} doses will be taken at: </span>
+                            <br />
+                            <ListGroup horizontal={"sm"} className="my-2 justify-content-center">
+                                {props.getState('mondayTimes').map((time, index) => 
+                                    <ListGroup.Item className={"ml-2 mr-2 mb-3"} variant={'secondary'} key={{ time } + '.' + index}>
+                                        {toTwelveHr(time)}
+                                    </ListGroup.Item>
+                                )}
+                            </ListGroup>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        ) 
+
+    }// end function timesList
 
     return (
         <Container className="step-container">
             <Row>
                 <Col>
-                    <h3>Set up Monday schedule</h3>
+                    <h3>{theDay} schedule setup</h3>
                     <p>
-                        We'll setup the schedule {theMedName} for each day of the week. 
+                        You may set up medication times for {theDay} on this page. Otherwise use the weekday links (FIX INSTRUCTIONS).
                     </p>
-                    <p>
-                        Lets setup the times for Monday.
-                    </p>
-                    
+                    <Row>
+                        <Col>
+                            <ButtonGroup className="mb-2">
+                                <Button onClick={() => props.jump(5)}>Mon</Button>
+                                <Button onClick={() => props.jump(6)}>Tues</Button>
+                                <Button onClick={() => props.jump(7)}>Wed</Button>
+                                <Button onClick={() => props.jump(8)}>Thur</Button>
+                                <Button onClick={() => props.jump(9)}>Fri</Button>
+                                <Button onClick={() => props.jump(10)}>Sat</Button>
+                                <Button onClick={() => props.jump(11)}>Sun</Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                     {timesList()} 
                 </Col>
             </Row>
-            <Row className="mt-4">
-                <Col>
-                    <TimePick submitTimes={submitTimeValues} />
+            <Row className="mt-3">
+                <Col md={4}>
+                    <Card border={"info rounded"} bg={"light"}>
+                        <Card.Body>
+                            <TimePicker
+                                timeValue={timeValue}
+                                size={'large'}
+                                onChange={onTimeChange}
+                                //onSelect={this.onTimeChange} // Might be useful instead of clicking OK
+                                format={"h a"}
+                                showNow={false}
+                                use12Hours
+                                //defaultValue={moment("00:00", "HH:mm")}       
+                            />
+                            <Card.Text className={"small mt-5 pb-0 pt-1 text-center text-danger"}>Make sure to click "ok" when using the time picker.
+                            </Card.Text>
+                        </Card.Body>
+                        <Card.Footer>
+                            
+                            <Row>
+                                <Col>
+                                    <Button className={"mb-2"} onClick={addTime} block>Add to schedule</Button>
+                                    <Button variant={"danger"} block onClick={() => props.setState('mondayTimes', [])}>Clear stored values</Button>
+                                </Col>
+                            </Row>
+
+                        </Card.Footer>
+                    </Card>
+
+                        
+                        
+               
+                </Col>
+                <Col md={8}>
+                    <ListGroup className={"text-left"}>
+                        <ListGroup.Item>
+                            Choose the times you want to take {theMedName} using the time picker to the right.
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            Click "Add to schedule" to save the time to your list.
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            If you need to clear the stored times and start over, click "Clear stored values".
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            When you are finished entering all your times, click "Proceed" at the bottom to proceed to Tuesday. Or you may use the weekday buttons to jump directly to specific days.
+                        </ListGroup.Item>
+
+                    </ListGroup>
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <Button className="backBlockButton" href="./dashboard" variant='danger' block>Go back to dashboard</Button>
+                    
+                </Col>
+                <Col>
+                </Col>
+            </Row>
+            <Row className={'mt-3'}>
+                <Col> {/* REMOVING THIS. AT LEAST FROM MONDAY AND EVERYDAY STEPS 
                     <Button
-                        variant='primary'
-                        onClick={validate}
-                        block>Proceed
+                        className="backBlockButton"
+                        onClick={() => props.prev()}
+                        
+                        variant='danger'
+                        block>Go back to the last step
+                    </Button> */}
+                    
+                    <Button
+                        variant='success'
+                        onClick={validate}//////////////////?FIXXXXXX
+                        block>Proceed to Tuesday
+                    </Button>
+                    <Button
+                        className={"mt-3"}
+                        variant={'success'}
+                        onClick={() => props.jump(12)}
+                        block>Finish adding times
                     </Button>
                 </Col>
             </Row>
-            <Row>
-                weeklyTimes: {props.getState("weeklyTImes", "")}
-            </Row>
 
             <MondayErrorModal
+                myjump={() => props.jump(6)}
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
         </Container>
     );
-}
 
-function MondayErrorModal(props) {
-    return (
-        <Modal
-            {...props}
-            animation={false}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton></Modal.Header>
-            <Modal.Body>
-                <h4>Ooops!</h4>
-                <p>You can't proceed until you've chosen a med to schedule!</p>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-} // end function
+    // Check that user actually set some times to state
+    function validate() {
+        const currMondayTimes = props.getState('mondayTimes');
+        /*if (!currMondayTimes || currMondayTimes.length === 0) {
+        }*/
+        (currMondayTimes && currMondayTimes.length > 0) ?
+            (function () {
+                props.jump(6);
+            })()
+            :
+            setModalShow(true)
+    } // end function validate
 
-/* CHECKBOXES (NOT COVERED ABOVE)
-Now props.handleChange function can be passed to onChange event of a checkbox field. props.getState('checkbox_name') can be passed to checked property of the same field. About file inputs, I need to do more research. However, props.setState('key', 'value') method for updating state can be a workaround for now. */
+    function MondayErrorModal(props) {
+        return (
+            <Modal
+                {...props}
+                animation={false}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                    <h4>Warning! It doesn't look like you saved any times at all.</h4>
+                    <p>Are you sure you don't want to enter any times to schedule?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => props.onHide()}>Return to Add times</Button>
+                    {/*<Button onClick={props.myJump(12)}>Continue Anyway</Button>*/}
+                    <Button onClick={() => props.myjump(6)}>Continue Anyway</Button>
 
-/* THIS MIGHT BE USEFUL FOR STEP TRANSITIONS
-http://reactcommunity.org/react-transition-group/transition */
+                </Modal.Footer>
+            </Modal>
+        );
+    } // end EveryDay2ErrorModal
+
+} // end function EveryDay2

@@ -32,7 +32,7 @@ export default function Step2(props) {
                 <Row>
                     <Col>
                         <Button className="backBlockButton"
-                            variant='success'
+                            variant='danger'
                             onClick={() => props.jump(1)}
                             block
                         
@@ -40,9 +40,9 @@ export default function Step2(props) {
                              
                     </Button>
                         <Button
-                            variant='warning'
+                            variant='success'
                             onClick={proceedToStep3}
-                            block>Proceed to make a new schedule for {theMedName}
+                            block>Proceed & make a new schedule for {theMedName}
                     </Button>
                     </Col>
                 </Row>
