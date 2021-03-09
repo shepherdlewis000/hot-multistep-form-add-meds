@@ -44,10 +44,7 @@ export default function Step1(props) {
                 const exists = true;
                 props.setState('existingScheduleX', exists); // Check DB for existing schedule
 
-                //props.setState('deleteOldScheduleX', exists);
-                //this.forceUpdate();
-                console.log("state step1 line 22:");
-                console.dir(props.state);
+                
 
                 if (exists) {
                     props.next(); // Step 2 confirms deleteOldScheduleX

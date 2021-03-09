@@ -2,24 +2,26 @@
 import React from "react";
 
 function arrayOutput(arr) {
-  
   arr.map((el, index) => {
     let akey = `${el}.index`;
     return <li key={akey}>{el}</li>
   });
 
 }
-
+/*
 function arrayOut2(arr) {
   return (<div>
     {arr.map((el, index) => (
         <p key={el + "." + index}>{el}, </p>
     ))}
     </div>);
-}
+} */
 
 function FinalStep(props) {
-  arrayOutput(props.getState('weeklyTimes'));
+  if (props.getState('weeklyTimes')) {
+    arrayOutput(props.getState('weeklyTimes'));
+  }
+
   console.log('hey');
   return (
     <div>
@@ -32,12 +34,13 @@ function FinalStep(props) {
       
       <p>5 weeklyTimes: {props.getState('weeklyTimes')}</p>
       <p>5b weeklyTImes: </p>
-      {
-        console.dir(props.getState('weeklyTimes'))
-        
-
-      }
-      <p>6 weeklyTimes.length: {props.getState('weeklyTimes').length}</p>
+      
+      { (props.getState('weeklyTimes') ? 
+        <p>6 weeklyTimes.length: {props.getState('weeklyTimes').length}</p>
+        :
+        null
+       )}
+      
 
       <p>7 MondayTimes: {props.getState('MondayTimes')}</p>
       <p>8 TuesayTimes: {props.getState('TuesdayTimes')}</p>

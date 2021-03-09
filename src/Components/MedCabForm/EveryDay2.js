@@ -3,6 +3,7 @@ import "antd/dist/antd.css";
 import { TimePicker } from "antd";
 import moment from 'moment';
 import { Row, Col, Button, Container, Modal, ListGroup, Card } from 'react-bootstrap';
+import { convertLegacyProps } from 'antd/lib/button/button';
 
 // props
 // weeklyTimes -> array of times
@@ -176,7 +177,7 @@ export default function EveryDay2(props){
                         block>Go back to the last step</Button>
                     <Button
                         variant='primary'
-                        onClick={() => props.jump(12)}//////////////////?FIXXXXXX
+                        onClick={validate}//////////////////?FIXXXXXX
                         block>Proceed
                     </Button>
 
@@ -184,14 +185,54 @@ export default function EveryDay2(props){
             </Row>
 
             <EveryDay2ErrorModal
-                ///// REMOVED FOR DEBUGGING
+                myjump={() => props.jump(12)}
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
         </Container>
     );
-}
 
+    // Check that user actually set some times to state
+    function validate() {
+        const currWeeklyTimes = props.getState('weeklyTimes');
+        /*if (!currWeeklyTimes || currWeeklyTimes.length === 0) {
+        }*/
+        (currWeeklyTimes && currWeeklyTimes.length > 0) ?
+            (function () {
+                props.jump(12);
+            })()
+            :
+            setModalShow(true)
+    } // end function validate
+
+    function EveryDay2ErrorModal(props) {
+        return (
+            <Modal
+                {...props}
+                animation={false}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                    <h4>Warning! It doesn't look like you saved any times at all.</h4>
+                    <p>Are you sure you don't want to enter any times to schedule?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => props.onHide()}>Return to Add times</Button>
+                    {/*<Button onClick={props.myJump(12)}>Continue Anyway</Button>*/}
+                    <Button onClick={() => props.myjump(12)}>Continue Anyway</Button>
+
+                </Modal.Footer>
+            </Modal>
+        );
+    } // end EveryDay2ErrorModal
+
+} // end function EveryDay2
+
+/* Trying to move inside because it can't seem to use 
+react-step-builder's jump() out here 
 function EveryDay2ErrorModal(props) {
     return (
         <Modal
@@ -203,13 +244,14 @@ function EveryDay2ErrorModal(props) {
         >
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
-                <h4>Ooops!</h4>
-                <p>You can't proceed!!!!!</p>
+                <h4>Warning! It doesn't look like you saved any times at all.</h4>
+                <p>Are you sure you don't want to enter any times to schedule?</p>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
+                <Button onClick={props.onHide}>Return to Add times</Button>
+                <Button onClick={props.myJump(12)}>Continue Anyway</Button>
             </Modal.Footer>
         </Modal>
     );
 }
-
+*/
